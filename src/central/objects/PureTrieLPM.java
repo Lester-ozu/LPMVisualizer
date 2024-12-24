@@ -68,7 +68,7 @@ public class PureTrieLPM {
         for (int i = 0; i < binaryIp.length(); ) {
             boolean matched = false;
 
-            // Try matching the longest prefixes first
+            // Traverse the trie and find the longest match
             for (String prefix : node.children.keySet()) {
                 if (binaryIp.startsWith(prefix, i)) {
                     node = node.children.get(prefix);
@@ -81,16 +81,14 @@ public class PureTrieLPM {
                 }
             }
 
-            // If no match, break
             if (!matched) {
                 break;
             }
         }
 
         // Cache the result
-        String result = bestMatch != null ? bestMatch : defaultGateway;
+        String result = bestMatch != null ? bestMatch : defaultGateway; // Fall back to default gateway
         if (prefixCache.size() >= CACHE_SIZE) {
-            // Remove the least recently used entry if cache size exceeds limit
             String oldestKey = prefixCache.keySet().iterator().next();
             prefixCache.remove(oldestKey);
         }
@@ -98,6 +96,7 @@ public class PureTrieLPM {
 
         return result;
     }
+
 
     private String convertToBinary(String ip) {
         if (ip.contains("/")) {

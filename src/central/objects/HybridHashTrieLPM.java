@@ -18,6 +18,7 @@ class HybridTrieNode {
 
 public class HybridHashTrieLPM {
     private HybridTrieNode root;
+    private String defaultGateway = "0.0.0.0/0";
     private Map<String, String> prefixCache; // Cache for Longest Prefix Match results
     private Map<String, String> hashTable;   // Hash table for quick lookup
     private static final int CACHE_SIZE = 100; // Limit cache size
@@ -63,35 +64,48 @@ public class HybridHashTrieLPM {
 
         String binaryIp = convertToBinary(ip);
         String bestMatch = null;
+        int longestPrefixLength = -1;
 
-        // First, try using the hash table for quick lookups for short prefixes
-        if (binaryIp.length() <= 16 && hashTable.containsKey(binaryIp)) {
-            bestMatch = hashTable.get(binaryIp);
-        } else {
-            HybridTrieNode node = root;
-            for (int i = 0; i < binaryIp.length();) {
-                boolean matched = false;
-
-                for (String prefix : node.children.keySet()) {
-                    if (binaryIp.startsWith(prefix, i)) {
-                        node = node.children.get(prefix);
-                        i += prefix.length();
-                        if (node.destination != null) {
-                            bestMatch = node.destination;
-                        }
-                        matched = true;
-                        break;
-                    }
-                }
-
-                if (!matched) {
-                    break;
+        // Check the hash table for short prefixes
+        for (Map.Entry<String, String> entry : hashTable.entrySet()) {
+            String prefix = entry.getKey();
+            if (binaryIp.startsWith(prefix)) {
+                int prefixLength = prefix.length();
+                if (prefixLength > longestPrefixLength) {
+                    longestPrefixLength = prefixLength;
+                    bestMatch = entry.getValue();
                 }
             }
         }
 
+        // Check the trie for long prefixes
+        HybridTrieNode node = root;
+        for (int i = 0; i < binaryIp.length(); ) {
+            boolean matched = false;
+
+            for (String prefix : node.children.keySet()) {
+                if (binaryIp.startsWith(prefix, i)) {
+                    node = node.children.get(prefix);
+                    i += prefix.length();
+                    if (node.destination != null) {
+                        int prefixLength = i;
+                        if (prefixLength > longestPrefixLength) {
+                            longestPrefixLength = prefixLength;
+                            bestMatch = node.destination;
+                        }
+                    }
+                    matched = true;
+                    break;
+                }
+            }
+
+            if (!matched) {
+                break;
+            }
+        }
+
         // Cache the result
-        String result = bestMatch != null ? bestMatch : "0.0.0.0/0";
+        String result = bestMatch != null ? bestMatch : defaultGateway; // Fall back to default gateway
         if (prefixCache.size() >= CACHE_SIZE) {
             String oldestKey = prefixCache.keySet().iterator().next();
             prefixCache.remove(oldestKey);
@@ -100,6 +114,8 @@ public class HybridHashTrieLPM {
 
         return result;
     }
+
+
 
     private String convertToBinary(String ip) {
         if (ip.contains("/")) {

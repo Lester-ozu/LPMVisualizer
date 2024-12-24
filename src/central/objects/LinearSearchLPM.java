@@ -14,17 +14,19 @@ public class LinearSearchLPM {
     public String longestPrefixMatch(String ip) {
         String binaryIp = convertToBinary(ip);
         String longestMatch = null;
+        int maxPrefixLength = -1;
 
         for (IPRoute route : routes) {
             String binaryPrefix = convertToBinary(route.getPrefix());
-
-            if (isMatchWithRedundantCheck(binaryIp, binaryPrefix)) {
-                longestMatch = route.getDestination(); // Update the best match
+            if (binaryIp.startsWith(binaryPrefix)) {
+                int prefixLength = binaryPrefix.length();
+                // Update longest match if this prefix is longer
+                if (prefixLength > maxPrefixLength) {
+                    maxPrefixLength = prefixLength;
+                    longestMatch = route.getDestination();
+                }
             }
-
-            lookUp();
         }
-
         return longestMatch != null ? longestMatch : defaultGateway;
     }
 
@@ -56,11 +58,5 @@ public class LinearSearchLPM {
         return binary.toString();
     }
 
-    private void lookUp() {
-        routes.sort((a, b) -> {
-            // A simple comparison that doesn't affect the result
-            return a.getPrefix().compareTo(b.getPrefix());
-        });
 
-    }
 }
