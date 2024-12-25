@@ -79,7 +79,6 @@ public class Main {
         // Measure the time and space complexity for each approach
         measureLpmPerformance(linearRouter, trieRouter, hybridRouter, ipAddresses);
     }
-
     public static void main(String[] args) {
         // Test Case 1: 50 destinations, 30 HashMap, 20 Trie, No match
         System.out.println("50 Destinations | No Match Found");
@@ -120,7 +119,6 @@ public class Main {
         System.out.println("\n1000000 Destinations | Match Found");
         testCase(1000000, 750000, 250000, true);
     }
-
 
     // Method to measure and display LPM time and space complexity for all approaches
     private static void measureLpmPerformance(LinearSearchLPM linearRouter, PureTrieLPM trieRouter, HybridHashTrieLPM hybridRouter, List<String> ipAddresses) {
