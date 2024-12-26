@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="833.0" style="-fx-background-radius: 25; -fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(135, 206, 235, 1) 0%, rgba(255, 255, 255, 1) 100%); -fx-border-radius: 25; -fx-border-width: 2; -fx-border-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="central.controllers.ResultsPageController">
+   <children>
+      <Label alignment="CENTER" layoutX="31.0" layoutY="48.0" prefHeight="22.0" prefWidth="226.0" style="-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(135, 206, 235, 1) 0%, rgba(255, 255, 255, 1) 100%); -fx-background-radius: 20 20 0 0; -fx-border-radius: 20 20 0 0; -fx-border-width: 1; -fx-border-color: black;" text="IP Addresses">
+         <font>
+            <Font name="Montserrat Medium" size="15.0" />
+         </font>
+      </Label>
+      <Line endX="-42.79998779296875" endY="-33.20000076293945" layoutX="598.0" layoutY="46.0" startX="-42.79998779296875" startY="514.0" />
+      <ScrollPane layoutX="32.0" layoutY="72.0" prefHeight="224.0" prefWidth="226.0">
+         <content>
+            <FlowPane fx:id="ipFlowPane" alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="242.0" prefWidth="226.0" />
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="299.0" layoutY="72.0" prefHeight="224.0" prefWidth="226.0">
+         <content>
+            <FlowPane fx:id="routesFlowPane" alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="242.0" prefWidth="226.0" />
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="162.0" layoutY="333.0" prefHeight="224.0" prefWidth="226.0">
+         <content>
+            <FlowPane fx:id="bestMatchFlowPane" alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="242.0" prefWidth="226.0" />
+         </content>
+      </ScrollPane>
+      <Label alignment="CENTER" layoutX="299.0" layoutY="48.0" prefHeight="22.0" prefWidth="226.0" style="-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(135, 206, 235, 1) 0%, rgba(255, 255, 255, 1) 100%); -fx-background-radius: 20 20 0 0; -fx-border-radius: 20 20 0 0; -fx-border-width: 1; -fx-border-color: black;" text="Routes">
+         <font>
+            <Font name="Montserrat Medium" size="15.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="162.0" layoutY="309.0" prefHeight="22.0" prefWidth="226.0" style="-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(135, 206, 235, 1) 0%, rgba(255, 255, 255, 1) 100%); -fx-background-radius: 20 20 0 0; -fx-border-radius: 20 20 0 0; -fx-border-width: 1; -fx-border-color: black;" text="Best Match">
+         <font>
+            <Font name="Montserrat Medium" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="636.0" layoutY="48.0" text="Performance">
+         <font>
+            <Font name="Montserrat ExtraBold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="568.0" layoutY="91.0" text="Linear Search:">
+         <font>
+            <Font name="Montserrat SemiBold" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="568.0" layoutY="219.0" text="Pure Trie:">
+         <font>
+            <Font name="Montserrat SemiBold" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="571.0" layoutY="356.0" text="Hash Trie (Hybrid):">
+         <font>
+            <Font name="Montserrat SemiBold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="timeLinearSearch" layoutX="632.0" layoutY="129.0" text="Time Taken:">
+         <font>
+            <Font name="Montserrat Light" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="memoryLinearSearch" layoutX="608.0" layoutY="165.0" text="Memory Usage:">
+         <font>
+            <Font name="Montserrat Light" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="timePureTrie" layoutX="632.0" layoutY="257.0" text="Time Taken:">
+         <font>
+            <Font name="Montserrat Light" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="memoryPureTrie" layoutX="608.0" layoutY="293.0" text="Memory Usage:">
+         <font>
+            <Font name="Montserrat Light" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="timeHashTrie" layoutX="632.0" layoutY="396.0" text="Time Taken:">
+         <font>
+            <Font name="Montserrat Light" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="memoryHashTrie" layoutX="608.0" layoutY="432.0" text="Memory Usage:">
+         <font>
+            <Font name="Montserrat Light" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="52.0" layoutY="13.0" text="LPM">
+         <font>
+            <Font name="Montserrat SemiBold" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="86.0" layoutY="13.0" text="Visualizer">
+         <font>
+            <Font name="Montserrat Light" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="backButton" alignment="CENTER" layoutX="11.0" layoutY="-2.0" prefHeight="26.0" prefWidth="40.0" style="-fx-cursor: hand;" text="←">
+         <font>
+            <Font name="Montserrat ExtraBold" size="35.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Label fx:id="exitButton" alignment="CENTER" layoutX="784.0" layoutY="8.0" prefHeight="39.0" prefWidth="46.0" style="-fx-cursor: hand;" text="X">
+         <font>
+            <Font name="Montserrat ExtraBold" size="20.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Label fx:id="minimizeButton" alignment="CENTER" layoutX="750.0" layoutY="-5.0" prefHeight="26.0" prefWidth="40.0" style="-fx-cursor: hand;" text="_">
+         <font>
+            <Font name="Montserrat ExtraBold" size="32.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+   </children>
+</AnchorPane>

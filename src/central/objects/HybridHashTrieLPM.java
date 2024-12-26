@@ -35,38 +35,29 @@ public class HybridHashTrieLPM {
 
     private void insert(String prefix, String destination) {
         String binaryPrefix = convertToBinary(prefix);
-
-        if (binaryPrefix.length() <= 16) {
-            // For short prefixes, use a hash table for quick lookup
-            hashTable.put(binaryPrefix, destination);
-        } else {
-            // For longer prefixes, insert into the trie
-            HybridTrieNode node = root;
-            for (int i = 0; i < binaryPrefix.length();) {
-                StringBuilder currentPrefix = new StringBuilder();
-                while (i < binaryPrefix.length() && (node.children.isEmpty() || node.children.size() == 1)) {
-                    currentPrefix.append(binaryPrefix.charAt(i));
-                    i++;
-                }
-
-                node.children.putIfAbsent(currentPrefix.toString(), new HybridTrieNode());
-                node = node.children.get(currentPrefix.toString());
-            }
-            node.isEndOfPrefix = true;
-            node.destination = destination;
+        HybridTrieNode node = root;
+    
+        for (char bit : binaryPrefix.toCharArray()) {
+            String bitStr = String.valueOf(bit);
+            node.children.putIfAbsent(bitStr, new HybridTrieNode());
+            node = node.children.get(bitStr);
         }
+    
+        node.isEndOfPrefix = true;
+        node.destination = destination;
     }
+    
 
     public String longestPrefixMatch(String ip) {
         if (prefixCache.containsKey(ip)) {
             return prefixCache.get(ip);
         }
-
+    
         String binaryIp = convertToBinary(ip);
         String bestMatch = null;
         int longestPrefixLength = -1;
-
-        // Check the hash table for short prefixes
+    
+        // Check hash table for short prefixes
         for (Map.Entry<String, String> entry : hashTable.entrySet()) {
             String prefix = entry.getKey();
             if (binaryIp.startsWith(prefix)) {
@@ -77,57 +68,52 @@ public class HybridHashTrieLPM {
                 }
             }
         }
-
-        // Check the trie for long prefixes
+    
+        // Search trie for long prefixes
         HybridTrieNode node = root;
-        for (int i = 0; i < binaryIp.length(); ) {
-            boolean matched = false;
-
-            for (String prefix : node.children.keySet()) {
-                if (binaryIp.startsWith(prefix, i)) {
-                    node = node.children.get(prefix);
-                    i += prefix.length();
-                    if (node.destination != null) {
-                        int prefixLength = i;
-                        if (prefixLength > longestPrefixLength) {
-                            longestPrefixLength = prefixLength;
-                            bestMatch = node.destination;
-                        }
-                    }
-                    matched = true;
-                    break;
+        StringBuilder matchedPrefix = new StringBuilder();
+    
+        for (char bit : binaryIp.toCharArray()) {
+            String bitStr = String.valueOf(bit);
+            if (node.children.containsKey(bitStr)) {
+                matchedPrefix.append(bitStr);
+                node = node.children.get(bitStr);
+    
+                if (node.isEndOfPrefix) {
+                    longestPrefixLength = matchedPrefix.length();
+                    bestMatch = node.destination;
                 }
-            }
-
-            if (!matched) {
+            } else {
                 break;
             }
         }
-
+    
         // Cache the result
-        String result = bestMatch != null ? bestMatch : defaultGateway; // Fall back to default gateway
+        String result = (bestMatch != null) ? bestMatch : defaultGateway; // Fallback to default gateway
         if (prefixCache.size() >= CACHE_SIZE) {
-            String oldestKey = prefixCache.keySet().iterator().next();
-            prefixCache.remove(oldestKey);
+            prefixCache.keySet().iterator().remove();
         }
         prefixCache.put(ip, result);
-
+    
         return result;
     }
+    
 
 
 
     private String convertToBinary(String ip) {
-        if (ip.contains("/")) {
-            ip = ip.split("/")[0];  // Remove subnet mask part
-        }
-
-        String[] parts = ip.split("\\.");
+        String[] parts = ip.split("/");
+        String ipPart = parts[0];
+        int maskLength = parts.length > 1 ? Integer.parseInt(parts[1]) : 32; // Default to /32 if no mask
+    
+        String[] octets = ipPart.split("\\.");
         StringBuilder binary = new StringBuilder();
-
-        for (String part : parts) {
-            binary.append(String.format("%8s", Integer.toBinaryString(Integer.parseInt(part))).replace(' ', '0'));
+    
+        for (String octet : octets) {
+            binary.append(String.format("%8s", Integer.toBinaryString(Integer.parseInt(octet))).replace(' ', '0'));
         }
-        return binary.toString();
-    }
+    
+        // Respect subnet mask length
+        return binary.substring(0, maskLength);
+    }    
 }

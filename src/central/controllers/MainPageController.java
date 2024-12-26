@@ -1,9 +1,13 @@
 package central.controllers;
 
 import central.utils.LPMUtil;
-import central.objects.IPRoute;
+import central.utils.StageUtil;
+import central.objects.*;
+import central.controllers.*;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -20,10 +24,11 @@ public class MainPageController implements Initializable{
 
     @FXML private Label exitButton, minimizeButton, warningLabel;
     @FXML private JFXButton resetButton, startButton;
-    @FXML private TextField destinationNumberPrompt, hashMapCountPrompt, trieCountPrompt;
+    @FXML private TextField destinationNumberPrompt, packetNumberPrompt;
 
     private List<String> IPAddresses;
     private List<IPRoute> IPRoutes;
+    private HashMap<String, String> bestMatch;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -39,26 +44,43 @@ public class MainPageController implements Initializable{
         exitButton.setOnMouseExited(event ->{exitButton.setStyle("");});
         exitButton.setOnMouseClicked(event -> {((Stage)minimizeButton.getScene().getWindow()).close();});
 
-        addChangeListener(destinationNumberPrompt, hashMapCountPrompt, trieCountPrompt);
+        addChangeListener(destinationNumberPrompt, packetNumberPrompt);
     }
 
     @FXML
     void resetClicked(ActionEvent event) {
 
         destinationNumberPrompt.clear();
-        hashMapCountPrompt.clear();
-        trieCountPrompt.clear();
+        packetNumberPrompt.clear();
     }
 
     @FXML
-    void startClicked(ActionEvent event) {
+    void startClicked(ActionEvent event) throws IOException {
+
+        bestMatch = new HashMap<>();
 
         int destinationNumber = Integer.parseInt(destinationNumberPrompt.getText().trim());
-        int hashMapCount = Integer.parseInt(hashMapCountPrompt.getText().trim());
-        int trieCount = Integer.parseInt(trieCountPrompt.getText().trim());
+        int hashMapCount = (int) Math.ceil(destinationNumber * 0.7);
+        int trieCount = destinationNumber - hashMapCount;
 
         IPRoutes = LPMUtil.generateRoutingTable(destinationNumber, hashMapCount, trieCount);
-        IPAddresses = LPMUtil.generateRandomIPs(destinationNumber, IPRoutes);
+        IPAddresses = LPMUtil.generateRandomIPs(Integer.parseInt(packetNumberPrompt.getText().trim()), IPRoutes);
+
+        LinearSearchLPM linearRouter = new LinearSearchLPM(IPRoutes);
+        PureTrieLPM trieRouter = new PureTrieLPM(IPRoutes);
+        HybridHashTrieLPM hashTrieRouter = new HybridHashTrieLPM(IPRoutes);        
+
+        StringBuilder linearData = LPMUtil.measureLinearPerformance(linearRouter, IPAddresses);
+        StringBuilder trieData = LPMUtil.measureTriePerformance(trieRouter, IPAddresses);
+        StringBuilder hashTrieData = LPMUtil.measureHashTriePerformance(hashTrieRouter, IPAddresses, bestMatch);
+
+        StageUtil newStage = new StageUtil("/resources/fxml/resultsPage.fxml");
+        ResultsPageController controller = (ResultsPageController) newStage.getController();
+        controller.setData(IPAddresses, IPRoutes, linearData.toString(), trieData.toString(), hashTrieData.toString(), bestMatch);
+        controller.initializePanes();
+        controller.initializeResults();
+
+        ((Stage)exitButton.getScene().getWindow()).close();
     }
 
     private void addChangeListener(TextField... textFields) {

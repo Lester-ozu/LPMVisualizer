@@ -12,11 +12,13 @@ import javafx.stage.StageStyle;
 public class StageUtil {
 
     double xOffset, yOffset;
+    FXMLLoader loader;
 
     public StageUtil(String path) throws IOException {
 
         Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource(path));
+        loader = new FXMLLoader(getClass().getResource(path));
+        Parent root = loader.load();
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
@@ -36,5 +38,10 @@ public class StageUtil {
         });
 
         stage.show();
+    }
+
+    public Object getController() {
+
+        return loader.getController();
     }
 }

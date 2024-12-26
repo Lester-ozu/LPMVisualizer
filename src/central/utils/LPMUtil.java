@@ -1,10 +1,14 @@
 package central.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import central.objects.HybridHashTrieLPM;
 import central.objects.IPRoute;
+import central.objects.LinearSearchLPM;
+import central.objects.PureTrieLPM;
 
 public class LPMUtil {
     
@@ -34,26 +38,85 @@ public class LPMUtil {
         Random random = new Random();
 
         for (int i = 0; i < count; i++) {
-            int octet1 = random.nextInt(256);
-            int octet2 = random.nextInt(256);
-            int octet3 = random.nextInt(256);
-            int octet4 = random.nextInt(256);
 
-            String ip = octet1 + "." + octet2 + "." + octet3 + "." + octet4;
+            String ip;
 
-            // Ensure match if required
-            if (routes != null) {
-                for (IPRoute route : routes) {
-                    if (ip.startsWith(route.getPrefix().split("/")[0])) {
-                        ipAddresses.add(ip);
-                        break;
-                    }
-                }
+            if(routes != null && !routes.isEmpty()) {
+            
+                IPRoute route = routes.get(random.nextInt(routes.size()));
+                String [] prefixParts = route.getPrefix().split("\\.|/");
+
+                ip = prefixParts[0] + "." + prefixParts[1] + "." + prefixParts[2] + "." + random.nextInt(256);
+            }
+
+            else {
+
+                ip = random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256);
             }
 
             ipAddresses.add(ip);
         }
 
         return ipAddresses;
+    }
+
+    public static StringBuilder measureLinearPerformance(LinearSearchLPM linearRouter, List<String> ipAddresses) {
+        StringBuilder results = new StringBuilder();
+
+        Runtime runtime = Runtime.getRuntime();
+
+        // Measure time and space for Linear Search
+        runtime.gc();
+        long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
+        long startTime = System.nanoTime();
+        for (String ip : ipAddresses) {
+            linearRouter.longestPrefixMatch(ip);
+        }
+        long endTime = System.nanoTime();
+        long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
+        results.append((endTime - startTime) / 1_000_000.0);
+        results.append("\n" + (memoryAfter - memoryBefore) / 1024.0);
+
+        return results;
+    }
+
+    public static StringBuilder measureTriePerformance(PureTrieLPM trieRouter, List<String> ipAddresses) {
+        StringBuilder results = new StringBuilder();
+
+        Runtime runtime = Runtime.getRuntime();
+
+        // Measure time and space for Pure Trie
+        runtime.gc();
+        long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
+        long startTime = System.nanoTime();
+        for (String ip : ipAddresses) {
+            trieRouter.longestPrefixMatch(ip);
+        }
+        long endTime = System.nanoTime();
+        long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
+        results.append((endTime - startTime) / 1_000_000.0);
+        results.append("\n" + ( memoryAfter - memoryBefore) / 1024.0);
+
+        return results;
+    }
+
+    public static StringBuilder measureHashTriePerformance(HybridHashTrieLPM hybridRouter, List<String> ipAddresses, HashMap<String, String> bestMatch) {
+        StringBuilder results = new StringBuilder();
+
+        Runtime runtime = Runtime.getRuntime();
+
+        // Measure time and space for Hybrid Hash-Trie
+        runtime.gc();
+        long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
+        long startTime = System.nanoTime();
+        for (String ip : ipAddresses) {
+            bestMatch.put(ip, hybridRouter.longestPrefixMatch(ip));
+        }
+        long endTime = System.nanoTime();
+        long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
+        results.append((endTime - startTime) / 1_000_000.0);
+        results.append("\n" + (memoryAfter - memoryBefore) / 1024.0);
+
+        return results;
     }
 }

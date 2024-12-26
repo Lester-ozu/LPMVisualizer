@@ -16,6 +16,5 @@ public class AppMain extends Application{
     public void start(Stage arg0) throws Exception {
         
         new StageUtil("/resources/fxml/mainPage.fxml");
-        System.out.println("long");
     }
 }

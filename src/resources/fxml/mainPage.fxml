@@ -9,9 +9,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="422.0" style="-fx-background-radius: 20; -fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(135, 206, 235, 1) 0%, rgba(255, 255, 255, 1) 100%);; -fx-border-radius: 20; -fx-border-width: 2; -fx-border-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="central.controllers.MainPageController">
    <children>
-      <TextField fx:id="destinationNumberPrompt" alignment="CENTER" layoutX="211.0" layoutY="166.0" prefHeight="26.0" prefWidth="150.0" promptText="destination no." />
-      <TextField fx:id="hashMapCountPrompt" alignment="CENTER" layoutX="211.0" layoutY="204.0" prefHeight="26.0" prefWidth="150.0" promptText="hashmap no." />
-      <TextField fx:id="trieCountPrompt" alignment="CENTER" layoutX="211.0" layoutY="249.0" prefHeight="26.0" prefWidth="150.0" promptText="triecount no." />
+      <TextField fx:id="destinationNumberPrompt" alignment="CENTER" layoutX="221.0" layoutY="166.0" prefHeight="26.0" prefWidth="150.0" promptText="destination no." />
+      <TextField fx:id="packetNumberPrompt" alignment="CENTER" layoutX="222.0" layoutY="215.0" prefHeight="26.0" prefWidth="150.0" promptText="packet no." />
       <Label fx:id="exitButton" alignment="CENTER" layoutX="372.0" layoutY="7.0" prefHeight="39.0" prefWidth="46.0" style="-fx-cursor: hand;" text="X">
          <font>
             <Font name="Montserrat ExtraBold" size="20.0" />
@@ -38,32 +37,27 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Label>
-      <Label layoutX="41.0" layoutY="169.0" text="Destination Number:">
+      <Label layoutX="51.0" layoutY="169.0" text="Destination Number:">
          <font>
             <Font name="Montserrat Light" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="208.0" text="HashMap Count:">
+      <Label layoutX="84.0" layoutY="219.0" text="Packet Number:">
          <font>
             <Font name="Montserrat Light" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="117.0" layoutY="253.0" text="Trie Count:">
-         <font>
-            <Font name="Montserrat Light" size="15.0" />
-         </font>
-      </Label>
-      <JFXButton fx:id="startButton" buttonType="RAISED" layoutX="121.0" layoutY="333.0" onAction="#startClicked" style="-fx-cursor: hand; -fx-background-radius: 15;" text="Start">
+      <JFXButton fx:id="startButton" buttonType="RAISED" layoutX="122.0" layoutY="303.0" onAction="#startClicked" style="-fx-cursor: hand; -fx-background-radius: 15;" text="Start">
          <font>
             <Font name="Montserrat Medium" size="20.0" />
          </font>
       </JFXButton>
-      <JFXButton fx:id="resetButton" buttonType="RAISED" layoutX="225.0" layoutY="333.0" onAction="#resetClicked" style="-fx-cursor: hand; -fx-background-radius: 15;" text="Reset">
+      <JFXButton fx:id="resetButton" buttonType="RAISED" layoutX="226.0" layoutY="303.0" onAction="#resetClicked" style="-fx-cursor: hand; -fx-background-radius: 15;" text="Reset">
          <font>
             <Font name="Montserrat Medium" size="20.0" />
          </font>
       </JFXButton>
-      <Label fx:id="warningLabel" alignment="CENTER" layoutX="120.0" layoutY="303.0" prefHeight="18.0" prefWidth="196.0" text="the program only accepts integers" textFill="RED">
+      <Label fx:id="warningLabel" alignment="CENTER" layoutX="121.0" layoutY="273.0" prefHeight="18.0" prefWidth="196.0" text="the program only accepts integers" textFill="RED">
          <font>
             <Font name="Montserrat Light" size="11.0" />
          </font>
