@@ -9,20 +9,23 @@ import java.util.ResourceBundle;
 
 import central.objects.IPRoute;
 
-import central.objects.IPRoute;
 import central.utils.StageUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class ResultsPageController implements Initializable {
 
-    @FXML private Label backButton, exitButton, memoryHashTrie, memoryLinearSearch, memoryPureTrie, minimizeButton, timeHashTrie, timeLinearSearch, timePureTrie;
+    @FXML private Label backButton, exitButton, memoryHashTrie, memoryLinearSearch, 
+                        memoryPureTrie, minimizeButton, timeHashTrie, timeLinearSearch, 
+                        timePureTrie, ipBarClear, routeBarClear, bestMatchBarClear;
     @FXML private FlowPane bestMatchFlowPane, ipFlowPane, routesFlowPane;
+    @FXML private TextField ipSearchBar, routeSearchBar, bestMatchSearchBar;
 
     private List<String> IPAddresses;
     private List<IPRoute> IPRoutes;
@@ -42,16 +45,28 @@ public class ResultsPageController implements Initializable {
 
         backButton.setOnMouseEntered(event ->{backButton.setStyle("-fx-text-fill: white;");});
         backButton.setOnMouseExited(event ->{backButton.setStyle("");});
-        // backButton.setOnMouseClicked(event -> {
+        backButton.setOnMouseClicked(event -> {
 
-        //     ((Stage)backButton.getScene().getWindow()).close();
+            ((Stage)backButton.getScene().getWindow()).close();
 
-        //     try {
-        //         new StageUtil("/resources/fxml/.fxml");
-        //     } catch (IOException e) {
-        //         e.printStackTrace();
-        //     }
-        // });
+            try {
+                new StageUtil("/resources/fxml/mainPage.fxml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        ipBarClear.setOnMouseClicked(event -> {ipSearchBar.clear();});
+        ipBarClear.setOnMouseEntered(event ->{ipBarClear.setStyle("-fx-text-fill: red;");});
+        ipBarClear.setOnMouseExited(event ->{ipBarClear.setStyle("");});
+        
+        routeBarClear.setOnMouseClicked(event -> {routeSearchBar.clear();});
+        routeBarClear.setOnMouseEntered(event ->{routeBarClear.setStyle("-fx-text-fill: red;");});
+        routeBarClear.setOnMouseExited(event ->{routeBarClear.setStyle("");});
+
+        bestMatchBarClear.setOnMouseClicked(event -> {bestMatchSearchBar.clear();});
+        bestMatchBarClear.setOnMouseEntered(event ->{bestMatchBarClear.setStyle("-fx-text-fill: red;");});
+        bestMatchBarClear.setOnMouseExited(event ->{bestMatchBarClear.setStyle("");});
     }
 
     public void setData(List<String> IPAddresses, List<IPRoute> IPRoutes, String linearData, String trieData, String hashTrieData, HashMap<String, String> bestMatch) {
@@ -67,42 +82,61 @@ public class ResultsPageController implements Initializable {
     public void initializePanes() {
 
         ipFlowPane.setPrefSize(226, 20 * IPAddresses.size());
-        routesFlowPane.setPrefSize(226, 19 * IPRoutes.size());
+        routesFlowPane.setPrefSize(226, 20 * IPRoutes.size());
         bestMatchFlowPane.setPrefSize(226, 19.3 * bestMatch.size());
 
         ipFlowPane.getChildren().clear();
         routesFlowPane.getChildren().clear();
         bestMatchFlowPane.getChildren().clear();
 
-        for(String ip : IPAddresses) {
+        ipSearchBar.textProperty().addListener((observable, oldValue, newValue) -> filterFlowPane(ipFlowPane, IPAddresses, null, newValue));
+        routeSearchBar.textProperty().addListener((observable, oldValue, newValue) -> filterFlowPane(routesFlowPane, IPRoutes, null, newValue));
+        bestMatchSearchBar.textProperty().addListener((observable, oldValue, newValue) -> filterFlowPane(bestMatchFlowPane, null, bestMatch, newValue));
 
-            Label ipLabel = new Label(ip);
-            ipLabel.setPrefSize(222, 18);
-            ipLabel.setFont(new Font("Montserrat Light", 14));
-            ipLabel.setAlignment(Pos.CENTER);
-            ipLabel.setStyle("-fx-border-width: 0.5; -fx-border-color: black;");
-            ipFlowPane.getChildren().add(ipLabel);
+        populateFlowPane(ipFlowPane, IPAddresses, null);
+        populateFlowPane(routesFlowPane, IPRoutes, null);
+        populateFlowPane(bestMatchFlowPane, null, bestMatch);
+    }
+
+    private void filterFlowPane(FlowPane flowPane, List<?> items, HashMap<?, ?> bestMatch,  String query) {
+
+        flowPane.getChildren().clear();
+
+        if(items != null && !items.isEmpty() && items.get(0) instanceof String) {
+
+            for (String item : (List<String>) items) {
+                if (item.contains(query)) {
+                    Label label = createLabel(item);
+                    flowPane.getChildren().add(label);
+                }
+            }
         }
 
-        for(IPRoute route : IPRoutes) {
-            
-            Label routeLabel = new Label(route.getPrefix() + " || " + route.getDestination());
-            routeLabel.setPrefSize(220, 18);
-            routeLabel.setFont(new Font("Montserrat Light", 13));
-            routeLabel.setAlignment(Pos.CENTER);
-            routeLabel.setStyle("-fx-border-width: 0.5; -fx-border-color: black;");
-            routesFlowPane.getChildren().add(routeLabel);
+        else if (items != null && !items.isEmpty() && items.get(0) instanceof IPRoute) {
+
+            for (IPRoute route : (List<IPRoute>) items) {
+                String content = route.getPrefix() + " || " + route.getDestination();
+                if (content.contains(query)) {
+                    Label label = createLabel(content);
+                    flowPane.getChildren().add(label);
+                }
+            }
         }
 
-        for(Map.Entry<String, String> entry : bestMatch.entrySet()) {
+        else if (bestMatch != null && !bestMatch.isEmpty()){
 
-            Label bestMatchLabel = new Label(entry.getKey() + " -> " + entry.getValue());
-            bestMatchLabel.setPrefSize(220, 18);
-            bestMatchLabel.setFont(new Font("Montserrat Light", 13));
-            bestMatchLabel.setAlignment(Pos.CENTER);
-            bestMatchLabel.setStyle("-fx-border-width: 0.5; -fx-border-color: black;");
-            bestMatchFlowPane.getChildren().add(bestMatchLabel);
+            for (Map.Entry<?, ?> entry : bestMatch.entrySet()) {
+                String content = entry.getKey() + " -> " + entry.getValue();
+                if (content.contains(query)) {
+                    Label label = createLabel(content);
+                    flowPane.getChildren().add(label);
+                }
+            }
         }
+    }
+
+    private void populateFlowPane(FlowPane flowPane, List<?> items, HashMap<?, ?> bestMatch) {
+        filterFlowPane(flowPane, items, bestMatch, "");
     }
 
     public void initializeResults() {
@@ -119,5 +153,15 @@ public class ResultsPageController implements Initializable {
 
         timeHashTrie.setText("Time Taken: " + String.format("%.2f", Double.parseDouble(hashTrieArray[0].trim())) + " ms");
         memoryHashTrie.setText("Memory Usage: " + String.format("%.2f", Double.parseDouble(hashTrieArray[1].trim())) + " kb");
+    }
+
+    private Label createLabel(String text) {
+
+        Label label = new Label(text);
+        label.setPrefSize(222, 18);
+        label.setFont(new Font("Montserrat Light", 13));
+        label.setAlignment(Pos.CENTER);
+        label.setStyle("-fx-border-width: 0.5; -fx-border-color: black;");
+        return label;
     }
 }

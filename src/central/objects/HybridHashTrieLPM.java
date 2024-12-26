@@ -1,6 +1,7 @@
 package central.objects;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -91,9 +92,12 @@ public class HybridHashTrieLPM {
         // Cache the result
         String result = (bestMatch != null) ? bestMatch : defaultGateway; // Fallback to default gateway
         if (prefixCache.size() >= CACHE_SIZE) {
-            prefixCache.keySet().iterator().remove();
+            Iterator<String> iterator = prefixCache.keySet().iterator(); // Get an iterator for the key set
+            if (iterator.hasNext()) { // Check if there is at least one entry
+                iterator.next(); // Move to the first element
+                iterator.remove(); // Safely remove it
+            }
         }
-        prefixCache.put(ip, result);
     
         return result;
     }
