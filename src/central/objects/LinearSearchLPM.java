@@ -11,13 +11,14 @@ public class LinearSearchLPM {
     }
 
     // LPM using linear search with an unordered list
-    public String longestPrefixMatch(String ip) {
+    public String longestPrefixMatch(String ip, List<String> traversal) {
         String binaryIp = convertToBinary(ip);
         String longestMatch = null;
         int maxPrefixLength = -1;
 
         for (IPRoute route : routes) {
             String binaryPrefix = convertToBinary(route.getPrefix());
+            traversal.add(route.getPrefix());
             if (binaryIp.startsWith(binaryPrefix)) {
                 int prefixLength = binaryPrefix.length();
                 // Update longest match if this prefix is longer

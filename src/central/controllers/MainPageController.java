@@ -3,10 +3,10 @@ package central.controllers;
 import central.utils.LPMUtil;
 import central.utils.StageUtil;
 import central.objects.*;
-import central.controllers.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,7 +26,7 @@ public class MainPageController implements Initializable{
     @FXML private JFXButton resetButton, startButton;
     @FXML private TextField destinationNumberPrompt, packetNumberPrompt;
 
-    private List<String> IPAddresses;
+    private List<String> IPAddresses, linearTraversal;
     private List<IPRoute> IPRoutes;
     private HashMap<String, String> bestMatch;
     
@@ -58,6 +58,7 @@ public class MainPageController implements Initializable{
     void startClicked(ActionEvent event) throws IOException {
 
         bestMatch = new HashMap<>();
+        linearTraversal = new ArrayList<>();
 
         int destinationNumber = Integer.parseInt(destinationNumberPrompt.getText().trim());
         int hashMapCount = (int) Math.ceil(destinationNumber * 0.7);
@@ -70,13 +71,13 @@ public class MainPageController implements Initializable{
         PureTrieLPM trieRouter = new PureTrieLPM(IPRoutes);
         HybridHashTrieLPM hashTrieRouter = new HybridHashTrieLPM(IPRoutes);        
 
-        StringBuilder linearData = LPMUtil.measureLinearPerformance(linearRouter, IPAddresses);
+        StringBuilder linearData = LPMUtil.measureLinearPerformance(linearRouter, IPAddresses, linearTraversal);
         StringBuilder trieData = LPMUtil.measureTriePerformance(trieRouter, IPAddresses);
         StringBuilder hashTrieData = LPMUtil.measureHashTriePerformance(hashTrieRouter, IPAddresses, bestMatch);
 
         StageUtil newStage = new StageUtil("/resources/fxml/resultsPage.fxml");
         ResultsPageController controller = (ResultsPageController) newStage.getController();
-        controller.setData(IPAddresses, IPRoutes, linearData.toString(), trieData.toString(), hashTrieData.toString(), bestMatch);
+        controller.setData(IPAddresses, IPRoutes, linearData.toString(), trieData.toString(), hashTrieData.toString(), bestMatch, linearTraversal);
         controller.initializePanes();
         controller.initializeResults();
 

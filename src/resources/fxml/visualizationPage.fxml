@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="849.0" style="-fx-background-radius: 25; -fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(135, 206, 235, 1) 0%, rgba(255, 255, 255, 1) 100%); -fx-border-radius: 25; -fx-border-width: 2; -fx-border-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="central.controllers.VisualizationPageController">
+   <children>
+      <Label fx:id="titleLabel" alignment="CENTER" layoutX="7.0" layoutY="33.0" prefHeight="43.0" prefWidth="849.0" text="Title Here">
+         <font>
+            <Font name="Montserrat SemiBold" size="35.0" />
+         </font>
+      </Label>
+      <ScrollPane layoutX="42.0" layoutY="101.0" prefHeight="414.0" prefWidth="772.0">
+         <content>
+            <Pane fx:id="contentPane" prefHeight="416.0" prefWidth="769.0" />
+         </content>
+      </ScrollPane>
+      <Label fx:id="exitButton" alignment="CENTER" layoutX="802.0" layoutY="12.0" prefHeight="39.0" prefWidth="46.0" style="-fx-cursor: hand;" text="X">
+         <font>
+            <Font name="Montserrat ExtraBold" size="20.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+   </children>
+</AnchorPane>

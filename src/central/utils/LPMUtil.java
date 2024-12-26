@@ -60,7 +60,7 @@ public class LPMUtil {
         return ipAddresses;
     }
 
-    public static StringBuilder measureLinearPerformance(LinearSearchLPM linearRouter, List<String> ipAddresses) {
+    public static StringBuilder measureLinearPerformance(LinearSearchLPM linearRouter, List<String> ipAddresses, List<String> traversal) {
         StringBuilder results = new StringBuilder();
 
         Runtime runtime = Runtime.getRuntime();
@@ -70,7 +70,7 @@ public class LPMUtil {
         long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
         long startTime = System.nanoTime();
         for (String ip : ipAddresses) {
-            linearRouter.longestPrefixMatch(ip);
+            linearRouter.longestPrefixMatch(ip, traversal);
         }
         long endTime = System.nanoTime();
         long memoryAfter = runtime.totalMemory() - runtime.freeMemory();

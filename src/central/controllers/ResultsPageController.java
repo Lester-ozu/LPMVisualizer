@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import central.objects.IPRoute;
-
+import central.panes.linearSearchPane;
 import central.utils.StageUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,11 +23,12 @@ public class ResultsPageController implements Initializable {
 
     @FXML private Label backButton, exitButton, memoryHashTrie, memoryLinearSearch, 
                         memoryPureTrie, minimizeButton, timeHashTrie, timeLinearSearch, 
-                        timePureTrie, ipBarClear, routeBarClear, bestMatchBarClear;
+                        timePureTrie, ipBarClear, routeBarClear, bestMatchBarClear,
+                        linearSearchLabel, trieLabel, hashTrieLabel;
     @FXML private FlowPane bestMatchFlowPane, ipFlowPane, routesFlowPane;
     @FXML private TextField ipSearchBar, routeSearchBar, bestMatchSearchBar;
 
-    private List<String> IPAddresses;
+    private List<String> IPAddresses, linearTraversal;
     private List<IPRoute> IPRoutes;
     private HashMap<String, String> bestMatch;
     private String linearData, trieData, hashTrieData;
@@ -67,9 +68,28 @@ public class ResultsPageController implements Initializable {
         bestMatchBarClear.setOnMouseClicked(event -> {bestMatchSearchBar.clear();});
         bestMatchBarClear.setOnMouseEntered(event ->{bestMatchBarClear.setStyle("-fx-text-fill: red;");});
         bestMatchBarClear.setOnMouseExited(event ->{bestMatchBarClear.setStyle("");});
+
+        linearSearchLabel.setOnMouseEntered(event ->{linearSearchLabel.setStyle("-fx-text-fill: white");});
+        linearSearchLabel.setOnMouseExited(event ->{linearSearchLabel.setStyle("");});
+        linearSearchLabel.setOnMouseClicked(event -> {
+            try {
+                visualizeLinearSearch();
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+        });
+
+        trieLabel.setOnMouseEntered(event ->{trieLabel.setStyle("-fx-text-fill: white");});
+        trieLabel.setOnMouseExited(event ->{trieLabel.setStyle("");});
+        trieLabel.setOnMouseClicked(event -> visualizeTrie());
+
+        hashTrieLabel.setOnMouseEntered(event ->{hashTrieLabel.setStyle("-fx-text-fill: white");});
+        hashTrieLabel.setOnMouseExited(event ->{hashTrieLabel.setStyle("");});
+        hashTrieLabel.setOnMouseClicked(event -> visualizeHashTrie());
     }
 
-    public void setData(List<String> IPAddresses, List<IPRoute> IPRoutes, String linearData, String trieData, String hashTrieData, HashMap<String, String> bestMatch) {
+    public void setData(List<String> IPAddresses, List<IPRoute> IPRoutes, String linearData, String trieData, String hashTrieData, HashMap<String, String> bestMatch, List<String> linearTraversal) {
 
         this.IPAddresses = IPAddresses;
         this.IPRoutes = IPRoutes;
@@ -77,6 +97,7 @@ public class ResultsPageController implements Initializable {
         this.linearData = linearData;
         this.trieData = trieData;
         this.hashTrieData = hashTrieData;
+        this.linearTraversal = linearTraversal;
     }
 
     public void initializePanes() {
@@ -163,5 +184,29 @@ public class ResultsPageController implements Initializable {
         label.setAlignment(Pos.CENTER);
         label.setStyle("-fx-border-width: 0.5; -fx-border-color: black;");
         return label;
+    }
+
+    private void visualizeLinearSearch() throws IOException {
+
+        linearSearchPane linearPane = new linearSearchPane(linearTraversal, linearTraversal.getLast());
+        linearPane.setPrefSize(30 * linearTraversal.size(), 200);
+
+        StageUtil modalStage = new StageUtil("/resources/fxml/visualizationPage.fxml", ((Stage)ipBarClear.getScene().getWindow()));
+        VisualizationPageController controller = (VisualizationPageController) modalStage.getController();
+        controller.setTitle("Linear Search Visualization");
+        controller.setContentPane(linearPane);
+        
+        linearPane.displayList();
+        linearPane.visualizeTraversal(2);
+    }
+
+    private void visualizeTrie() {
+
+
+    }
+
+    private void visualizeHashTrie() {
+
+
     }
 }
