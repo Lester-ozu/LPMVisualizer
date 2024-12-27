@@ -26,7 +26,7 @@ public class MainPageController implements Initializable{
     @FXML private JFXButton resetButton, startButton;
     @FXML private TextField destinationNumberPrompt, packetNumberPrompt;
 
-    private List<String> IPAddresses, linearTraversal, trieTraversal;
+    private List<String> IPAddresses, linearTraversal;
     private List<IPRoute> IPRoutes;
     private HashMap<String, String> bestMatch;
     
@@ -59,7 +59,6 @@ public class MainPageController implements Initializable{
 
         bestMatch = new HashMap<>();
         linearTraversal = new ArrayList<>();
-        trieTraversal = new ArrayList<>();
 
         int destinationNumber = Integer.parseInt(destinationNumberPrompt.getText().trim());
         int hashMapCount = (int) Math.ceil(destinationNumber * 0.7);
@@ -73,12 +72,12 @@ public class MainPageController implements Initializable{
         HybridHashTrieLPM hashTrieRouter = new HybridHashTrieLPM(IPRoutes);        
 
         StringBuilder linearData = LPMUtil.measureLinearPerformance(linearRouter, IPAddresses, linearTraversal);
-        StringBuilder trieData = LPMUtil.measureTriePerformance(trieRouter, IPAddresses, trieTraversal);
+        StringBuilder trieData = LPMUtil.measureTriePerformance(trieRouter, IPAddresses);
         StringBuilder hashTrieData = LPMUtil.measureHashTriePerformance(hashTrieRouter, IPAddresses, bestMatch);
 
         StageUtil newStage = new StageUtil("/resources/fxml/resultsPage.fxml");
         ResultsPageController controller = (ResultsPageController) newStage.getController();
-        controller.setData(IPAddresses, IPRoutes, linearData.toString(), trieData.toString(), hashTrieData.toString(), bestMatch, linearTraversal, trieTraversal, trieRouter.getRoot());
+        controller.setData(IPAddresses, IPRoutes, linearData.toString(), trieData.toString(), hashTrieData.toString(), bestMatch, linearTraversal);
         controller.initializePanes();
         controller.initializeResults();
 

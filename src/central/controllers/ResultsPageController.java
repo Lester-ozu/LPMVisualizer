@@ -33,7 +33,6 @@ public class ResultsPageController implements Initializable {
     private List<IPRoute> IPRoutes;
     private HashMap<String, String> bestMatch;
     private String linearData, trieData, hashTrieData;
-    private TrieNode trieNodeRoot;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -83,7 +82,7 @@ public class ResultsPageController implements Initializable {
         });
     }
 
-    public void setData(List<String> IPAddresses, List<IPRoute> IPRoutes, String linearData, String trieData, String hashTrieData, HashMap<String, String> bestMatch, List<String> linearTraversal,  List<String> trieTraversal, TrieNode trieNodeRoot) {
+    public void setData(List<String> IPAddresses, List<IPRoute> IPRoutes, String linearData, String trieData, String hashTrieData, HashMap<String, String> bestMatch, List<String> linearTraversal) {
 
         this.IPAddresses = IPAddresses;
         this.IPRoutes = IPRoutes;
@@ -92,8 +91,6 @@ public class ResultsPageController implements Initializable {
         this.trieData = trieData;
         this.hashTrieData = hashTrieData;
         this.linearTraversal = linearTraversal;
-        this.trieTraversal = trieTraversal;
-        this.trieNodeRoot = trieNodeRoot;
     }
 
     public void initializePanes() {

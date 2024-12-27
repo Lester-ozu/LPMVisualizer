@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HybridTrieNode {
-    Map<String, HybridTrieNode> children;
-    boolean isEndOfPrefix;
-    String destination;
+    public Map<String, HybridTrieNode> children;
+    public boolean isEndOfPrefix;
+    public String destination;
 
     public HybridTrieNode() {
         this.children = new HashMap<>();

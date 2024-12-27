@@ -43,10 +43,7 @@ public class PureTrieLPM {
         node.destination = destination;
     }
 
-    public String longestPrefixMatch(String ip, List<String> sequence) {
-
-        sequence.clear();
-        sequence.add(ip);
+    public String longestPrefixMatch(String ip) {
 
         // Check cache first
         if (prefixCache.containsKey(ip)) {
@@ -68,7 +65,6 @@ public class PureTrieLPM {
                     if (node.destination != null) {
                         System.out.println("ESYEUSHDJSD");
                         bestMatch = node.destination;  // Update the best match
-                        sequence.add(node.destination);
                     }
                     matched = true;
                     break;
