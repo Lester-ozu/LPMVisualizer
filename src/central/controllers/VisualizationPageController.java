@@ -3,7 +3,7 @@ package central.controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import central.panes.linearSearchPane;
+import central.panes.LinearSearchPane;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -17,19 +17,25 @@ public class VisualizationPageController implements Initializable{
     @FXML private Label exitButton, titleLabel, ipFindLabel;
     @FXML private ImageView retryButton;
 
-    private linearSearchPane linearPane;
+    private LinearSearchPane linearPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        retryButton.setOnMouseClicked(event -> {linearPane.visualizeTraversal(0.5);});
+        retryButton.setOnMouseClicked(event -> {
+            
+            if(linearPane != null) {
+
+                linearPane.visualizeTraversal(0.5);
+            }
+        });
         
         exitButton.setOnMouseEntered(event ->{exitButton.setStyle("-fx-text-fill: white;");});
         exitButton.setOnMouseExited(event ->{exitButton.setStyle("");});
         exitButton.setOnMouseClicked(event -> {((Stage)exitButton.getScene().getWindow()).close();});
     }
 
-    public void setContentPane(Pane pane, linearSearchPane linearPane) {
+    public void setContentPane(Pane pane, LinearSearchPane linearPane) {
 
         this.contentPane.getChildren().clear();
         this.contentPane.getChildren().add(pane);

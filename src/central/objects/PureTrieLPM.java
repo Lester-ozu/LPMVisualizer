@@ -5,18 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-class TrieNode {
-    Map<String, TrieNode> children; // Map for compressed trie
-    boolean isEndOfPrefix;
-    String destination;
-
-    public TrieNode() {
-        this.children = new HashMap<>();
-        this.isEndOfPrefix = false;
-        this.destination = null;
-    }
-}
-
 public class PureTrieLPM {
     private TrieNode root;
     private String defaultGateway = "0.0.0.0/0";
@@ -55,7 +43,11 @@ public class PureTrieLPM {
         node.destination = destination;
     }
 
-    public String longestPrefixMatch(String ip) {
+    public String longestPrefixMatch(String ip, List<String> sequence) {
+
+        sequence.clear();
+        sequence.add(ip);
+
         // Check cache first
         if (prefixCache.containsKey(ip)) {
             return prefixCache.get(ip);
@@ -74,7 +66,9 @@ public class PureTrieLPM {
                     node = node.children.get(prefix);
                     i += prefix.length();
                     if (node.destination != null) {
+                        System.out.println("ESYEUSHDJSD");
                         bestMatch = node.destination;  // Update the best match
+                        sequence.add(node.destination);
                     }
                     matched = true;
                     break;
@@ -111,4 +105,6 @@ public class PureTrieLPM {
         }
         return binary.toString();
     }
+
+    public TrieNode getRoot() {return root;}
 }

@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import central.objects.IPRoute;
-import central.panes.linearSearchPane;
+import central.objects.TrieNode;
+import central.panes.LinearSearchPane;
 import central.utils.StageUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,10 +29,11 @@ public class ResultsPageController implements Initializable {
     @FXML private FlowPane bestMatchFlowPane, ipFlowPane, routesFlowPane;
     @FXML private TextField ipSearchBar, routeSearchBar, bestMatchSearchBar;
 
-    private List<String> IPAddresses, linearTraversal;
+    private List<String> IPAddresses, linearTraversal, trieTraversal;
     private List<IPRoute> IPRoutes;
     private HashMap<String, String> bestMatch;
     private String linearData, trieData, hashTrieData;
+    private TrieNode trieNodeRoot;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -79,17 +81,9 @@ public class ResultsPageController implements Initializable {
                 e.printStackTrace();
             }
         });
-
-        trieLabel.setOnMouseEntered(event ->{trieLabel.setStyle("-fx-text-fill: white");});
-        trieLabel.setOnMouseExited(event ->{trieLabel.setStyle("");});
-        trieLabel.setOnMouseClicked(event -> visualizeTrie());
-
-        hashTrieLabel.setOnMouseEntered(event ->{hashTrieLabel.setStyle("-fx-text-fill: white");});
-        hashTrieLabel.setOnMouseExited(event ->{hashTrieLabel.setStyle("");});
-        hashTrieLabel.setOnMouseClicked(event -> visualizeHashTrie());
     }
 
-    public void setData(List<String> IPAddresses, List<IPRoute> IPRoutes, String linearData, String trieData, String hashTrieData, HashMap<String, String> bestMatch, List<String> linearTraversal) {
+    public void setData(List<String> IPAddresses, List<IPRoute> IPRoutes, String linearData, String trieData, String hashTrieData, HashMap<String, String> bestMatch, List<String> linearTraversal,  List<String> trieTraversal, TrieNode trieNodeRoot) {
 
         this.IPAddresses = IPAddresses;
         this.IPRoutes = IPRoutes;
@@ -98,6 +92,8 @@ public class ResultsPageController implements Initializable {
         this.trieData = trieData;
         this.hashTrieData = hashTrieData;
         this.linearTraversal = linearTraversal;
+        this.trieTraversal = trieTraversal;
+        this.trieNodeRoot = trieNodeRoot;
     }
 
     public void initializePanes() {
@@ -188,7 +184,7 @@ public class ResultsPageController implements Initializable {
 
     private void visualizeLinearSearch() throws IOException {
 
-        linearSearchPane linearPane = new linearSearchPane(linearTraversal, linearTraversal.getLast());
+        LinearSearchPane linearPane = new LinearSearchPane(linearTraversal, linearTraversal.getLast());
 
         StageUtil modalStage = new StageUtil("/resources/fxml/visualizationPage.fxml", ((Stage)ipBarClear.getScene().getWindow()));
         VisualizationPageController controller = (VisualizationPageController) modalStage.getController();
@@ -199,15 +195,5 @@ public class ResultsPageController implements Initializable {
 
         linearPane.displayList();
         linearPane.visualizeTraversal(0.5);
-    }
-
-    private void visualizeTrie() {
-
-
-    }
-
-    private void visualizeHashTrie() {
-
-
     }
 }

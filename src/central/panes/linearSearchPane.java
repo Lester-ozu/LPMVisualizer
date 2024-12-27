@@ -12,17 +12,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class linearSearchPane extends Pane{
+public class LinearSearchPane extends Pane{
     
     private List<String> data;
-    private String target;
     private double boxWidth = 95, boxHeight = 30, hGap = 15;
     private Map<String, Rectangle> recTable = new HashMap<>();
 
-    public linearSearchPane (List<String> data, String target) {
+    public LinearSearchPane (List<String> data, String target) {
 
         this.data = data;
-        this.target = target;
 
         Rectangle clip = new Rectangle();
         clip.widthProperty().bind(this.widthProperty());
@@ -92,17 +90,6 @@ public class linearSearchPane extends Pane{
             timeline.getKeyFrames().add(
                 new KeyFrame(Duration.seconds(i * speed + speed), e -> resetItemColor(parts[1]))
             );
-
-            if(data.get(i).equals(target)) {
-
-                timeline.getKeyFrames().add(
-                new KeyFrame(Duration.seconds(i * speed), e -> highlightItem(parts))
-                );
-
-                timeline.getKeyFrames().add(
-                    new KeyFrame(Duration.seconds(i * speed + speed), e -> resetItemColor(parts[1]))
-                );
-            }
         }
 
         timeline.play();

@@ -80,7 +80,7 @@ public class LPMUtil {
         return results;
     }
 
-    public static StringBuilder measureTriePerformance(PureTrieLPM trieRouter, List<String> ipAddresses) {
+    public static StringBuilder measureTriePerformance(PureTrieLPM trieRouter, List<String> ipAddresses, List<String> traversal) {
         StringBuilder results = new StringBuilder();
 
         Runtime runtime = Runtime.getRuntime();
@@ -90,7 +90,7 @@ public class LPMUtil {
         long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
         long startTime = System.nanoTime();
         for (String ip : ipAddresses) {
-            trieRouter.longestPrefixMatch(ip);
+            trieRouter.longestPrefixMatch(ip, traversal);
         }
         long endTime = System.nanoTime();
         long memoryAfter = runtime.totalMemory() - runtime.freeMemory();

@@ -5,18 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-class HybridTrieNode {
-    Map<String, HybridTrieNode> children;
-    boolean isEndOfPrefix;
-    String destination;
-
-    public HybridTrieNode() {
-        this.children = new HashMap<>();
-        this.isEndOfPrefix = false;
-        this.destination = null;
-    }
-}
-
 public class HybridHashTrieLPM {
     private HybridTrieNode root;
     private String defaultGateway = "0.0.0.0/0";
