@@ -16,7 +16,7 @@ public class linearSearchPane extends Pane{
     
     private List<String> data;
     private String target;
-    private double boxWidth = 50, boxHeight = 30, hGap = 10;
+    private double boxWidth = 95, boxHeight = 30, hGap = 15;
     private Map<String, Rectangle> recTable = new HashMap<>();
 
     public linearSearchPane (List<String> data, String target) {
@@ -28,19 +28,26 @@ public class linearSearchPane extends Pane{
         clip.widthProperty().bind(this.widthProperty());
         clip.heightProperty().bind(this.heightProperty());
         this.setClip(clip);
+
+        this.widthProperty().addListener((obs, oldVal, newVal) -> displayList());
+        this.heightProperty().addListener((obs, oldVal, newVal) -> displayList());
     }
 
     public void displayList() {
 
         recTable.clear();
+        this.getChildren().clear();
         if (data != null && !data.isEmpty()) {
 
             double totalWidth = data.size() * boxWidth + (data.size() - 1) * hGap;
             double startX = (getWidth() - totalWidth) / 2;
-            double startY = (getHeight() / 2 - boxHeight) / 2;
-            for(int i = 0 ; i < data.size() ; i++) {
+            double startY = (getHeight() - boxHeight) / 2;
+            
+            for(int i = 1 ; i < data.size() ; i++) {
 
-                displayItem(data.get(i), i, startX + i * (boxWidth + hGap), startY);
+                String [] parts = data.get(i).split("=");
+
+                displayItem(parts[1], i, startX + i * (boxWidth + hGap), startY);
             }
         }
     }
@@ -51,7 +58,18 @@ public class linearSearchPane extends Pane{
         rect.setFill(Color.LIGHTBLUE);
         rect.setStroke(Color.BLACK);
 
-        Text text = new Text(x + boxWidth / 4, y + boxHeight / 2 + 5, item);
+        Text text;
+
+        if(item.length() <= 14) {
+            
+            text = new Text(x + boxWidth / 7, y + boxHeight / 2 + 5, item);
+        }
+
+        else {
+
+            text = new Text(x + boxWidth / 22, y + boxHeight / 2 + 5, item);
+        }
+
         text.setStyle("-fx-font-size: 12px;");
 
         recTable.put(item, rect);
@@ -63,26 +81,26 @@ public class linearSearchPane extends Pane{
         if (data == null || data.isEmpty()) return;
 
         Timeline timeline = new Timeline();
-        for (int i = 0; i < data.size(); i++) {
+        for (int i = 1; i < data.size(); i++) {
 
-            int index = i;
+            String [] parts = data.get(i).split("=");
 
             timeline.getKeyFrames().add(
-                new KeyFrame(Duration.seconds(i * speed), e -> highlightItem(data.get(index), target))
+                new KeyFrame(Duration.seconds(i * speed), e -> highlightItem(parts))
             );
 
             timeline.getKeyFrames().add(
-                new KeyFrame(Duration.seconds(i * speed + speed), e -> resetItemColor(data.get(index)))
+                new KeyFrame(Duration.seconds(i * speed + speed), e -> resetItemColor(parts[1]))
             );
 
             if(data.get(i).equals(target)) {
 
                 timeline.getKeyFrames().add(
-                new KeyFrame(Duration.seconds(i * speed), e -> highlightItem(data.get(index), target))
+                new KeyFrame(Duration.seconds(i * speed), e -> highlightItem(parts))
                 );
 
                 timeline.getKeyFrames().add(
-                    new KeyFrame(Duration.seconds(i * speed + speed), e -> resetItemColor(data.get(index)))
+                    new KeyFrame(Duration.seconds(i * speed + speed), e -> resetItemColor(parts[1]))
                 );
             }
         }
@@ -90,11 +108,11 @@ public class linearSearchPane extends Pane{
         timeline.play();
     }
 
-    private void highlightItem(String item, String target) {
+    private void highlightItem(String [] item) {
 
-        Rectangle rect = recTable.get(item);
+        Rectangle rect = recTable.get(item[1]);
 
-        if(item.equals(target)) {
+        if(item[0].equals("1")) {
 
             rect.setFill(Color.GREEN);
         }

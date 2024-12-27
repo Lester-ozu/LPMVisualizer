@@ -189,15 +189,16 @@ public class ResultsPageController implements Initializable {
     private void visualizeLinearSearch() throws IOException {
 
         linearSearchPane linearPane = new linearSearchPane(linearTraversal, linearTraversal.getLast());
-        linearPane.setPrefSize(30 * linearTraversal.size(), 200);
 
         StageUtil modalStage = new StageUtil("/resources/fxml/visualizationPage.fxml", ((Stage)ipBarClear.getScene().getWindow()));
         VisualizationPageController controller = (VisualizationPageController) modalStage.getController();
-        controller.setTitle("Linear Search Visualization");
-        controller.setContentPane(linearPane);
-        
+        controller.setTitle("Linear Search Visualization", linearTraversal.get(0));
+        controller.setContentPane(linearPane, linearPane);
+
+        controller.getContentPane().setPrefSize(115 * linearTraversal.size(), 300);
+
         linearPane.displayList();
-        linearPane.visualizeTraversal(2);
+        linearPane.visualizeTraversal(0.5);
     }
 
     private void visualizeTrie() {

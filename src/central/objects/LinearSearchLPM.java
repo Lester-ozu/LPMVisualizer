@@ -12,15 +12,27 @@ public class LinearSearchLPM {
 
     // LPM using linear search with an unordered list
     public String longestPrefixMatch(String ip, List<String> traversal) {
+
+        traversal.clear();
+        traversal.add(ip);
+
         String binaryIp = convertToBinary(ip);
         String longestMatch = null;
         int maxPrefixLength = -1;
 
         for (IPRoute route : routes) {
-            String binaryPrefix = convertToBinary(route.getPrefix());
-            traversal.add(route.getPrefix());
+            traversal.add("0="+route.getPrefix());
+            String prefix = route.getPrefix();
+            String[] prefixParts = prefix.split("/");
+            String binaryPrefix = convertToBinary(prefixParts[0]);
+            int prefixLength = Integer.parseInt(prefixParts[1]);  // Get the prefix length
+
+            // Truncate the binary prefix to the correct length
+            binaryPrefix = binaryPrefix.substring(0, prefixLength);
+
+            // Check for match
             if (binaryIp.startsWith(binaryPrefix)) {
-                int prefixLength = binaryPrefix.length();
+                traversal.set(traversal.size()-1, "1=" + route.getPrefix());
                 // Update longest match if this prefix is longer
                 if (prefixLength > maxPrefixLength) {
                     maxPrefixLength = prefixLength;
@@ -31,29 +43,21 @@ public class LinearSearchLPM {
         return longestMatch != null ? longestMatch : defaultGateway;
     }
 
-    private boolean isMatchWithRedundantCheck(String binaryIp, String binaryPrefix) {
-        // A redundant check to simulate extra work that is not needed
-        int minLength = Math.min(binaryIp.length(), binaryPrefix.length());
-        for (int i = 0; i < minLength; i++) {
-            if (binaryIp.charAt(i) != binaryPrefix.charAt(i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private String convertToBinary(String ip) {
         // Convert the IP to binary inefficiently
-        if (ip.contains("/")) {
-            ip = ip.split("/")[0];  // Remove subnet mask part
+        String[] parts = ip.split("\\.");
+        if (parts.length != 4) {
+            throw new IllegalArgumentException("Invalid IP address format: " + ip);
         }
 
-        String[] parts = ip.split("\\.");
         StringBuilder binary = new StringBuilder();
-
         for (String part : parts) {
-            // Convert each octet to binary and add leading zeroes inefficiently
-            String binaryOctet = String.format("%8s", Integer.toBinaryString(Integer.parseInt(part))).replace(' ', '0');
+            int octet = Integer.parseInt(part);
+            if (octet < 0 || octet > 255) {
+                throw new IllegalArgumentException("Invalid IP address part: " + part);
+            }
+            // Convert each octet to binary and pad with leading zeroes
+            String binaryOctet = String.format("%8s", Integer.toBinaryString(octet)).replace(' ', '0');
             binary.append(binaryOctet);
         }
         return binary.toString();
